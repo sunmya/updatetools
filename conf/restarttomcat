@@ -1,0 +1,39 @@
+PROCEFULLNAME=tomcat
+LOGTXT=/home/update.log
+prognum=`ps -ef | grep $PROCENAME | grep -v grep | wc -l`
+source /etc/profile 
+
+if [ $prognum -eq 0  ]
+then
+#start process
+	echo `date` $PROCENAME "in no pid"  >>$LOGTXT
+	echo 'aaa'
+	`echo $tomcatpath/bin/start.sh`
+else
+	#如果挂死了，杀掉程序
+		sshpid=`/bin/ps -ef | /bin/grep $PROCENAME  | /bin/grep -v grep | /bin/awk '{print $2}'`
+		echo $sshpid
+		echo `date` $sshpid "be killed"  >>$LOGTXT
+		for (( i=1; i<=5 ; i++ ))
+		do
+			if [ $sshpid ]
+			then
+			       /bin/kill -9 $sshpid
+				sleep 2
+				echo `date` $PROCENAME "is killed" >>$LOGTXT
+			else
+			#重启程序
+				echo `date` "restart" $PROCENAME "in after kill" >>$LOGTXT
+				$tomcatpath/bin/start.sh
+				break
+			fi
+			sshpid=`/bin/ps -ef | /bin/grep $PROCENAME | /bin/grep -v grep | /bin/awk '{print $2}'`
+			sleep 3
+		done
+		if [ $i -eq 6 ]
+		then
+			#重启程序失败，记录日志，下次再启动
+			echo `date` "restart" $PROCENAME "failure" >>$LOGTXT
+fi
+fi
+exit 0
