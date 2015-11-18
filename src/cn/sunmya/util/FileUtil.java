@@ -176,14 +176,13 @@ public class FileUtil {
 		String bakPath = "/home/bak/"+packageName;
 		
 		writer.write("#!/bin/bash\n\n");
-		writer.write("mkdir -p "+bakPath+"/mspweb\n");
 		writer.write("echo 请输入系统所在路径,默认为[/home]\n");
 		writer.write("read projectpath\n");
 		writer.write("if [ x$projectpath = \"x\" ]\n");
 		writer.write("then\n");
 		writer.write("projectpath=/home\n");
 		writer.write("fi\n");
-		writer.write("echo 系统所在路径：$projectpath/mspweb\n");
+		writer.write("echo 系统所在路径：$projectpath\n");
 		int i=4;
 		for(String filePath:listModel){
 			filePath=filePath.replaceAll("\\\\", "/");
@@ -196,36 +195,38 @@ public class FileUtil {
 			i++;
 		}
 		writer.write("mkdir -p "+"/home/upload/\n");
-		writer.write("tail  -n+"+(i+37)+" $0 >/home/upload/"+packageName+".zip\n");
+		writer.write("tail  -n+"+(i+38)+" $0 >/home/upload/"+packageName+".zip\n");
 		writer.write("unzip /home/upload/"+packageName+".zip -d $projectpath/\n");
 		//重启tomcat
-		writer.write("PROCEFULLNAME=tomcat\n");
+		writer.write("PROCENAME=tomcat\n");
 		writer.write("prognum=`ps -ef | grep $PROCENAME | grep -v grep | wc -l`\n");
-		writer.write("source /etc/profile \n");
+		writer.write("source /etc/profile  && echo $prognum \n");
 		writer.write("\n");
 		writer.write("if [ $prognum -ne 0  ]\n");
 		writer.write("then\n");
 		writer.write("		sshpid=`/bin/ps -ef | /bin/grep $PROCENAME  | /bin/grep -v grep | /bin/awk '{print $2}'`\n");
-		writer.write("		echo `date` $sshpid \"will be killed\"\n");
+		writer.write("		echo `date` $PROCENAME Process: $sshpid \"will be killed\"\n");
 		writer.write("    /bin/kill -9 $sshpid\n");
 		writer.write("    sleep 3\n");
+		writer.write("prognum=`ps -ef | grep $PROCENAME | grep -v grep | wc -l`\n");
 		writer.write("    if [ $prognum -eq 0  ]\n");
 		writer.write("		then\n");
-		writer.write("			echo `date` $PROCENAME \"is killed\"\n");
+		writer.write("			echo `date` $PROCENAME Process: $sshpid \"is killed\"\n");
 		writer.write("		else\n");
-		writer.write("			echo `date` $PROCENAME \"is not killed\"\n");
+		writer.write("			echo `date` $PROCENAME Process: $sshpid \"is not killed\"\n");
 		writer.write("		fi\n");
 		writer.write("fi\n");
 		writer.write("echo `date` \"restarting\" $PROCENAME\n");
-		writer.write("$tomcatpath/bin/start.sh\n");
+		writer.write("$tomcatpath/bin/startup.sh\n");
 		writer.write("sleep 3\n");
+		writer.write("prognum=`ps -ef | grep $PROCENAME | grep -v grep | wc -l`\n");
 		writer.write("if [ $prognum -eq 0  ]\n");
 		writer.write("then\n");
 		writer.write("	echo `date` \"restart\" $PROCENAME \"failure, please manual restart \"\n");
 		writer.write("else\n");
 		writer.write("	echo `date`  $PROCENAME \"restart success\"\n");
 		writer.write("fi\n");
-		writer.write("exit 0");
+		writer.write("exit 0\n");
 		
 		writer.close();
 		
