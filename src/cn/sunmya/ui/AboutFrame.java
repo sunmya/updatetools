@@ -21,7 +21,7 @@ public class AboutFrame extends JFrame implements Runnable {
 	private JLabel message = new JLabel("By Sunmengya1991@126.com", JLabel.RIGHT);// 用于显示错误信息的label
 
 	@Override
-	public void run() {
+	public void run() {  
 	}
 
 	/**
