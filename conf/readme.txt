@@ -13,4 +13,4 @@
 	sb.append(defaultTargetDir + "+包名
 	压缩包默认生成至:
 	sb.append(defaultTargetDir + "\\UpdatePackages\\.
-	                                  -- By Sunmengya1991@126.com
+	                                  -- By sunmengya.v@gmail.com
